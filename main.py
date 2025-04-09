@@ -4,16 +4,27 @@ import numpy as np
 import joblib
 
 app = FastAPI()
-model = joblib.load("model_volume_classifier.pkl")
 
+# Load kedua model
+model_volume = joblib.load("model_volume.pkl")
+model_tpm = joblib.load("model_tpm.pkl")
+
+# Schema untuk input
 class BeratInput(BaseModel):
     berat_total: float
 
-@app.post("/klasifikasi-infus")
+@app.post("/klasifikasi-volume")
 def klasifikasi_volume(data: BeratInput):
     berat = np.array([[data.berat_total]])
-    volume_pred = model.predict(berat)[0]
+    volume_pred = model_volume.predict(berat)[0]
     return {
-        "berat_total": data.berat_total,
-        "volume_terklasifikasi": int(volume_pred)
+        "volume": int(volume_pred)
+    }
+
+@app.post("/prediksi-tpm")
+def prediksi_tpm(data: BeratInput):
+    berat = np.array([[data.berat_total]])
+    tpm_pred = model_tpm.predict(berat)[0]
+    return {
+        "tpm_prediksi": float(tpm_pred)
     }
