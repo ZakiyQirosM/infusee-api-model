@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import numpy as np
-import pandas as pd  # Diperlukan untuk membuat DataFrame
+import pandas as pd
 
 app = FastAPI()
 
@@ -42,7 +42,7 @@ def prediksi_tpm_dari_db(data: IDInput):
     query = """
         SELECT 
             m.berat_total, 
-            s.durasi_infus_menit, 
+            s.durasi_infus_jam, 
             u.umur
         FROM table_monitoring_infus m
         JOIN infusion_sessions s ON m.id_session = s.id_session
