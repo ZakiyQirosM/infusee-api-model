@@ -3,6 +3,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import pandas as pd
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -60,6 +64,7 @@ def prediksi_tpm_dari_db(data: IDInput):
     "Berat Total (g)": berat_total
     }])
     volume = model_volume.predict(input_volume_df)[0]
+    logger.info(f"Volume prediksi: {volume}")
 
     # Prediksi TPM
     input_tpm_df = pd.DataFrame([{
@@ -68,6 +73,7 @@ def prediksi_tpm_dari_db(data: IDInput):
         'Umur': umur
     }])
     tpm = int(round(model_tpm.predict(input_tpm_df)[0]))
+    logger.info(f"TPM prediksi: {tpm}")
 
     # Update TPM ke database
     with get_db_connection() as conn:
